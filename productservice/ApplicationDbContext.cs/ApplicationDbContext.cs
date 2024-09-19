@@ -1,0 +1,41 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
+using productservice.Model;
+
+
+public class ApplicationDbContext : DbContext
+{
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
+    {
+    }
+
+    public DbSet<Product> Products { get; set; }
+    public DbSet<Cart> AdoptionPosts { get; set; }
+
+
+
+
+
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Product>()
+            .ToTable("product");
+
+       // modelBuilder.Entity<ReportMissingPost>()
+       //.ToTable("report_missing_post");
+
+
+
+
+    }
+
+
+
+
+
+
+}
+
+
