@@ -109,6 +109,30 @@ namespace productservice.Controllers
             }
         }
 
+        [HttpDelete("DeleteData/{id}")]
+        public async Task<IActionResult> DeleteData(int id)
+        {
+            try
+            {
+                var existingProduct = await _context.Products
+                    .FindAsync(id);
+
+                if (existingProduct == null)
+                {
+                    return NotFound(new { message = "Products  not found." });
+                }
+                _context.Products.Remove(existingProduct);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "Products  deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "An error occurred while deleting the Products.", error = ex.Message });
+            }
+        }
+
+
 
 
 

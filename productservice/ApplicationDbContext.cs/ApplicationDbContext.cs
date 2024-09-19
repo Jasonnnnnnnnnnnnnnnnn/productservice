@@ -11,7 +11,7 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<Product> Products { get; set; }
-    public DbSet<Cart> AdoptionPosts { get; set; }
+    public DbSet<Cart> Carts { get; set; }
 
 
 
@@ -23,8 +23,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Product>()
             .ToTable("product");
 
-       // modelBuilder.Entity<ReportMissingPost>()
-       //.ToTable("report_missing_post");
+        modelBuilder.Entity<Cart>()
+            .ToTable("cart");
 
 
 
