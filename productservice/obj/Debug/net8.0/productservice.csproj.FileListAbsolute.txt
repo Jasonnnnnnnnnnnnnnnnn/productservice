@@ -54,3 +54,10 @@ C:\micro group\productservice\productservice\obj\Debug\net8.0\refint\productserv
 C:\micro group\productservice\productservice\obj\Debug\net8.0\productservice.pdb
 C:\micro group\productservice\productservice\obj\Debug\net8.0\productservice.genruntimeconfig.cache
 C:\micro group\productservice\productservice\obj\Debug\net8.0\ref\productservice.dll
+C:\micro group\productservice\productservice\bin\Debug\net8.0\out\web.config
+C:\micro group\productservice\productservice\bin\Debug\net8.0\out\appsettings.Development.json
+C:\micro group\productservice\productservice\bin\Debug\net8.0\out\appsettings.json
+C:\micro group\productservice\productservice\bin\Debug\net8.0\out\productservice.deps.json
+C:\micro group\productservice\productservice\bin\Debug\net8.0\out\productservice.runtimeconfig.json
+C:\micro group\productservice\productservice\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\micro group\productservice\productservice\bin\Debug\net8.0\RabbitMQ.Client.dll

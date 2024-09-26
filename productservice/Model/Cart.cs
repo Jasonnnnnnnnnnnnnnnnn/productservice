@@ -17,8 +17,8 @@ namespace productservice.Model
         [Column("quantity")]
         public int  quantity { get; set; }
 
-        [Column("user")]
-        public int user { get; set; }
+        [Column("user_id")]
+        public int userId { get; set; }
 
 
 
