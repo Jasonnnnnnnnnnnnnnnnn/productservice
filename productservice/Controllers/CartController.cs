@@ -1,19 +1,24 @@
-﻿//using Microsoft.AspNetCore.Mvc;
+﻿
+
+//using Microsoft.AspNetCore.Mvc;
 //using Microsoft.EntityFrameworkCore;
+//using Newtonsoft.Json;
 //using productservice.Model;
+//using productservice.Service; // เพิ่มการใช้งาน RabbitMQService
 
 //namespace productservice.Controllers
 //{
-
 //    [ApiController]
 //    [Route("[controller]")]
 //    public class CartController : Controller
 //    {
 //        private readonly ApplicationDbContext _context;
+//        private readonly IRabbitMQService _rabbitMQService; // เพิ่มตัวแปรสำหรับ RabbitMQService
 
-//        public CartController(ApplicationDbContext context)
+//        public CartController(ApplicationDbContext context, IRabbitMQService rabbitMQService) // Inject RabbitMQService
 //        {
 //            _context = context;
+//            _rabbitMQService = rabbitMQService;
 //        }
 
 //        [HttpGet]
@@ -21,7 +26,7 @@
 //        {
 //            try
 //            {
-//                var carts = await _context.Carts.FromSqlRaw("SELECT cart_id , product_id, quantity , `user`   FROM  cart ;").ToListAsync();
+//                var carts = await _context.Carts.FromSqlRaw("SELECT cart_id , product_id, quantity , `user_id` FROM  cart ;").ToListAsync();
 //                return Ok(carts);
 //            }
 //            catch (Exception ex)
@@ -30,7 +35,6 @@
 //                return BadRequest(new { message = "An error occurred while retrieving the Carts.", error = ex.Message });
 //            }
 //        }
-
 
 //        [HttpPost]
 //        public async Task<IActionResult> Create([FromBody] Cart newPost)
@@ -42,9 +46,9 @@
 
 //            try
 //            {
-//                var query = "INSERT INTO cart (product_id, quantity, `user`) " +
+//                var query = "INSERT INTO cart (product_id, quantity, `user_id`) " +
 //                                           "VALUES (@p0, @p1, @p2)";
-//                await _context.Database.ExecuteSqlRawAsync(query, newPost.productId, newPost.quantity, newPost.user);
+//                await _context.Database.ExecuteSqlRawAsync(query, newPost.productId, newPost.quantity, newPost.userId);
 //                return Ok("Create Cart Success");
 //            }
 //            catch (Exception ex)
@@ -53,36 +57,25 @@
 //            }
 //        }
 
-//        [HttpDelete("DeleteData/{id}")]
-//        public async Task<IActionResult> DeleteData(int id)
+//        [HttpDelete("DeleteData/{userId}/{productId}")]
+//        public IActionResult DeleteData(int userId, int productId) // เปลี่ยนลักษณะพารามิเตอร์
 //        {
 //            try
 //            {
-//                var existingCart = await _context.Carts
-//                    .FindAsync(id);
+//                // สร้างคำสั่ง UpdateCartCommand
+//                //var command = new updatecartcommand { userid = userid, productid = productid };
+//                //var message = JsonConvert.SerializeObject(command);
 
-//                if (existingCart == null)
-//                {
-//                    return NotFound(new { message = "Carts  not found." });
-//                }
-//                _context.Carts.Remove(existingCart);
-//                await _context.SaveChangesAsync();
+//                // ส่งคำสั่งไปยัง RabbitMQ
+//                _rabbitMQService.Publish(message);
 
-//                return Ok(new { message = "Carts  deleted successfully." });
+//                return Ok(new { message = "Delete request sent to queue." });
 //            }
 //            catch (Exception ex)
 //            {
-//                return BadRequest(new { message = "An error occurred while deleting the Carts .", error = ex.Message });
+//                return BadRequest(new { message = "An error occurred while sending the delete request.", error = ex.Message });
 //            }
 //        }
-
-
-
-
-
-
-
-
 //    }
 //}
 
@@ -112,7 +105,7 @@ namespace productservice.Controllers
         {
             try
             {
-                var carts = await _context.Carts.FromSqlRaw("SELECT cart_id , product_id, quantity , `user_id` FROM  cart ;").ToListAsync();
+                var carts = await _context.Carts.FromSqlRaw("SELECT cart_id , product_id, quantity , `user_id` FROM  cart;").ToListAsync();
                 return Ok(carts);
             }
             catch (Exception ex)
@@ -144,12 +137,14 @@ namespace productservice.Controllers
         }
 
         [HttpDelete("DeleteData/{userId}/{productId}")]
-        public IActionResult DeleteData(int userId, int productId) // เปลี่ยนลักษณะพารามิเตอร์
+        public IActionResult DeleteData(int userId, int productId)
         {
             try
             {
                 // สร้างคำสั่ง UpdateCartCommand
-                var command = new UpdateCartCommand { UserId = userId, ProductId = productId };
+                var command = new UpdateCartCommand { userId = userId, productId = productId };
+
+                // แปลงคำสั่งเป็น JSON
                 var message = JsonConvert.SerializeObject(command);
 
                 // ส่งคำสั่งไปยัง RabbitMQ
@@ -164,4 +159,5 @@ namespace productservice.Controllers
         }
     }
 }
+
 

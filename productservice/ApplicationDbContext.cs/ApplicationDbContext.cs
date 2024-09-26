@@ -16,6 +16,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<User> Users { get; set; }
 
 
+    public DbSet<UpdateCartCommand> UpdateCartCommands { get; set; }
+
 
 
 
